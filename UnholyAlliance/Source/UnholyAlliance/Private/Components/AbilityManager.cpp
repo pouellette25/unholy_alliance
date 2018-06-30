@@ -1,7 +1,7 @@
 // Copyright Dragon Sword Entertainment 2018
 
 #include "AbilityManager.h"
-
+#include "AbilitySystem/UA_Ability.h"
 
 // Sets default values for this component's properties
 UAbilityManager::UAbilityManager()
@@ -20,7 +20,7 @@ void UAbilityManager::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 }
 
 
@@ -30,5 +30,14 @@ void UAbilityManager::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UAbilityManager::ActivateAbility(AUA_Ability* Ability)
+{
+	if (!ensure(Ability)) { return; }
+	// TODO: Spawn ability actor
+	UE_LOG(LogTemp, Warning, TEXT("Activate Ability Called for: %s"), *Ability->GetName());
+
+	Ability->Activate();
 }
 

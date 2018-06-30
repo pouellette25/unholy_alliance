@@ -23,9 +23,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 		EAbilityAimTypes AbilityAimType;
 
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-		void Activate();
-
 	/* Blueprint function that is called when the cast time is complete*/
 	UFUNCTION(BlueprintNativeEvent, Category = "Ability")
 		void Cast();
@@ -34,6 +31,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void Activate();
 	
 private:
 	void CastInternal();

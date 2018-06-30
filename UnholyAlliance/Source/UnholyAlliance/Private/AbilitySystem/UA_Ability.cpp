@@ -27,8 +27,13 @@ void AUA_Ability::Tick(float DeltaTime)
 
 void AUA_Ability::Activate()
 {
+	if (AbilityAimType == EAbilityAimTypes::AAT_INSTANT)
+	{
+		CastInternal();
+	}
+
 	// TODO: Add cast timers
-	CastInternal();
+
 }
 
 

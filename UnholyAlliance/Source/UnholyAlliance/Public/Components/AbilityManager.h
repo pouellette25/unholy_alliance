@@ -21,13 +21,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
-		TArray<TSubclassOf<AUA_Ability>> Abilities;
-
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
+		void ActivateAbility(AUA_Ability* Ability);
 		
-	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Abilities")
+		TArray<TSubclassOf<AUA_Ability>> AbilityClasses;
+
+private:
+	TArray<AUA_Ability*> ActiveAbilities;
 };
