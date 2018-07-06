@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "UnholyAlliance.h"
 #include "AbilityManager.generated.h"
 
-class AUA_Ability;
+class AAbility;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNHOLYALLIANCE_API UAbilityManager : public UActorComponent
@@ -26,11 +27,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
-		void ActivateAbility(AUA_Ability* Ability);
+		void ActivateAbility(EAbilityKeyTypes KeyType);
 		
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Abilities")
-		TArray<TSubclassOf<AUA_Ability>> AbilityClasses;
+		TMap<EAbilityKeyTypes, TSubclassOf<AAbility>> AbilityMappings;
 
 private:
-	TArray<AUA_Ability*> ActiveAbilities;
+	TMap<EAbilityKeyTypes, AAbility*> Abilities;
 };

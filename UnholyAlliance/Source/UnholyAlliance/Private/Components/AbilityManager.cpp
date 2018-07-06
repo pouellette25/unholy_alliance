@@ -1,7 +1,8 @@
 // Copyright Dragon Sword Entertainment 2018
 
 #include "AbilityManager.h"
-#include "AbilitySystem/UA_Ability.h"
+#include "AbilitySystem/Ability.h"
+#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UAbilityManager::UAbilityManager()
@@ -19,8 +20,27 @@ void UAbilityManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	if (AbilityMappings.Num() > 0)
+	{
+		for (auto AbilityMap : AbilityMappings)
+		{
+			auto AbilityObject = AbilityMap.Value->GetDefaultObject();
+			auto AbilityClass = AbilityObject->GetClass();
 
+			auto Owner = GetOwner();
+
+			UE_LOG(LogTemp, Warning, TEXT("Owner = %s"), *Owner->GetName());
+
+			const FVector Location = Owner->GetActorLocation();
+			const FRotator Rotation = Owner->GetActorRotation();
+
+			auto Ability = GetWorld()->SpawnActor(AbilityClass, &Location, &Rotation);
+
+			if (!ensure(Ability)) { return; }
+
+			Abilities.Add(AbilityMap.Key, Cast<AAbility>(Ability));
+		}
+	}
 }
 
 
@@ -32,12 +52,15 @@ void UAbilityManager::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	// ...
 }
 
-void UAbilityManager::ActivateAbility(AUA_Ability* Ability)
+void UAbilityManager::ActivateAbility(EAbilityKeyTypes KeyType)
 {
-	if (!ensure(Ability)) { return; }
-	// TODO: Spawn ability actor
-	UE_LOG(LogTemp, Warning, TEXT("Activate Ability Called for: %s"), *Ability->GetName());
+	if (Abilities.Num() > 0)
+	{
+		auto AbilityToActivate = Abilities[KeyType];
 
-	Ability->Activate();
+		if (!ensure(AbilityToActivate)) { return; }
+
+		AbilityToActivate->Activate();
+	}
 }
 

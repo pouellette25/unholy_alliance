@@ -6,6 +6,17 @@
 
 #define EnumToString(EnumClassName, EnumValue) GetEnumValueAsString(FString(TEXT(#EnumClassName)), (EnumValue))
 
+template<typename TEnum>
+static FORCEINLINE FString GetEnumValueAsString(const FString& Name, TEnum Value)
+{
+	const UEnum* enumPtr = FindObject<UEnum>(ANY_PACKAGE, *Name, true);
+	if (!enumPtr)
+	{
+		return FString("Invalid");
+	}
+	return enumPtr->GetNameByValue((int64)Value).ToString();
+}
+
 UENUM(BlueprintType)
 enum class EAbilityAimTypes : uint8
 {
@@ -19,13 +30,11 @@ enum class EAbilityAimTypes : uint8
 	AAT_NONE
 };
 
-template<typename TEnum>
-static FORCEINLINE FString GetEnumValueAsString(const FString& Name, TEnum Value)
+UENUM(BlueprintType)
+enum class EAbilityKeyTypes : uint8
 {
-	const UEnum* enumPtr = FindObject<UEnum>(ANY_PACKAGE, *Name, true);
-	if (!enumPtr)
-	{
-		return FString("Invalid");
-	}
-	return enumPtr->GetNameByValue((int64)Value).ToString();
-}
+	Ability_1,
+	Ability_2,
+	Ability_3,
+	Ability_4,
+};
