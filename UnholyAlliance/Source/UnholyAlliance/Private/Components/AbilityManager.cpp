@@ -10,7 +10,6 @@ UAbilityManager::UAbilityManager()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
 }
 
@@ -20,6 +19,8 @@ void UAbilityManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Owner = GetOwner();
+
 	if (AbilityMappings.Num() > 0)
 	{
 		for (auto AbilityMap : AbilityMappings)
@@ -27,14 +28,14 @@ void UAbilityManager::BeginPlay()
 			auto AbilityObject = AbilityMap.Value->GetDefaultObject();
 			auto AbilityClass = AbilityObject->GetClass();
 
-			auto Owner = GetOwner();
-
-			UE_LOG(LogTemp, Warning, TEXT("Owner = %s"), *Owner->GetName());
-
 			const FVector Location = Owner->GetActorLocation();
 			const FRotator Rotation = Owner->GetActorRotation();
 
-			auto Ability = GetWorld()->SpawnActor(AbilityClass, &Location, &Rotation);
+			FActorSpawnParameters SpawnParams;
+
+			SpawnParams.Owner = Owner;
+
+			auto Ability = GetWorld()->SpawnActor(AbilityClass, &Location, &Rotation, SpawnParams);
 
 			if (!ensure(Ability)) { return; }
 

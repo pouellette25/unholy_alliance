@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+//#include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "UnholyAlliance.h"
 #include "AbilityManager.generated.h"
@@ -34,4 +34,5 @@ public:
 
 private:
 	TMap<EAbilityKeyTypes, AAbility*> Abilities;
+	AActor* Owner;
 };
