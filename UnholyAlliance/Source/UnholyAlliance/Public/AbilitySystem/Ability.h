@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "UnholyAlliance.h"
+#include "Structs/UpgradeableParameter.h"
 #include "Ability.generated.h"
 
 UCLASS()
@@ -24,6 +25,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 		EAbilityAimTypes AbilityAimType;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "UpgradeableParameters")
+		FUpgradeableParameter BaseDamage;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "UpgradeableParameters")
+		FUpgradeableParameter CooldownTime;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "UpgradeableParameters")
+		FUpgradeableParameter Range;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "UpgradeableParameters")
+		FUpgradeableParameter CastTime;
 
 public:	
 	// Sets default values for this actor's properties

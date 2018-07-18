@@ -132,3 +132,12 @@ void AUnholyAllianceCharacter::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
+
+float AUnholyAllianceCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+{
+	const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	UE_LOG(LogTemp, Warning, TEXT("Take Damage Called."));
+
+	return Damage;
+}
