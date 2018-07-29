@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "UnholyAllianceCharacter.generated.h"
 
+class UPlayerStats;
+
 UCLASS(config=Game)
 class AUnholyAllianceCharacter : public ACharacter
 {
@@ -29,6 +31,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
+		TSubclassOf<UPlayerStats> Stats;
+
+	virtual void BeginPlay() override;
 protected:
 
 	/** Resets HMD orientation in VR. */

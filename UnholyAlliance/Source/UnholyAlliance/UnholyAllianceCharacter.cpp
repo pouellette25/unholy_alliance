@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Characters/PlayerStats.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUnholyAllianceCharacter
@@ -131,6 +132,15 @@ void AUnholyAllianceCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AUnholyAllianceCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	//if (HasAuthority())
+	//{
+	//	Stats = NewObject<UPlayerStats>(this);
+	//}
 }
 
 float AUnholyAllianceCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
