@@ -8,7 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Characters/PlayerStats.h"
+#include "Characters/UA_PlayerState.h"
+#include "UnholyAlliance.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUnholyAllianceCharacter
@@ -46,6 +47,7 @@ AUnholyAllianceCharacter::AUnholyAllianceCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -137,17 +139,23 @@ void AUnholyAllianceCharacter::MoveRight(float Value)
 void AUnholyAllianceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	//if (HasAuthority())
-	//{
-	//	Stats = NewObject<UPlayerStats>(this);
-	//}
+
+	if (PlayerState)
+	{
+		AUA_PlayerState* UAPlayerState = Cast<AUA_PlayerState>(PlayerState);
+
+		if (UAPlayerState)
+		{
+			UAPlayerState->Health.CurrentValue = BaseHealth;
+		}
+	}
 }
 
 float AUnholyAllianceCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
 	const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	UE_LOG(LogTemp, Warning, TEXT("Take Damage Called."));
+	//PlayerStats->Health.CurrentValue -= Damage;
 
 	return Damage;
 }
