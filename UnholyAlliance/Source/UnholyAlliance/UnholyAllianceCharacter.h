@@ -21,7 +21,9 @@ class AUnholyAllianceCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
-	UPlayerStats* PlayerStats;
+	void TryGetPlayerState();
+	FTimerHandle TimerHandle_TryGetPlayerState;
+
 public:
 	AUnholyAllianceCharacter();
 

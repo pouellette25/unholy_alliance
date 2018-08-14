@@ -140,14 +140,9 @@ void AUnholyAllianceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (PlayerState)
+	if (HasAuthority())
 	{
-		AUA_PlayerState* UAPlayerState = Cast<AUA_PlayerState>(PlayerState);
-
-		if (UAPlayerState)
-		{
-			UAPlayerState->Health.CurrentValue = BaseHealth;
-		}
+		GetWorldTimerManager().SetTimer(TimerHandle_TryGetPlayerState, this, &AUnholyAllianceCharacter::TryGetPlayerState, .1f, false);
 	}
 }
 
@@ -155,7 +150,40 @@ float AUnholyAllianceCharacter::TakeDamage(float Damage, struct FDamageEvent con
 {
 	const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	//PlayerStats->Health.CurrentValue -= Damage;
+	if (PlayerState)
+	{
+		AUA_PlayerState* UAPlayerState = Cast<AUA_PlayerState>(PlayerState);
 
-	return Damage;
+		if (UAPlayerState)
+		{
+			float currentHealth = UAPlayerState->GetHealth();
+
+			currentHealth -= Damage;
+			UAPlayerState->SetHealth(currentHealth);
+		}
+	}
+
+	return ActualDamage;
+}
+
+void AUnholyAllianceCharacter::TryGetPlayerState()
+{
+	if (PlayerState)
+	{
+		TRACE(UA, "TryGetPlayerState: %s", *GetEnumValueAsString("ENetRole", Role));
+		AUA_PlayerState* UAPlayerState = Cast<AUA_PlayerState>(PlayerState);
+
+		if (UAPlayerState)
+		{
+			TRACE(UA, "TryGetPlayerState: Base Health %f", BaseHealth);
+
+			UAPlayerState->SetHealth(BaseHealth);
+
+			GetWorldTimerManager().ClearTimer(TimerHandle_TryGetPlayerState);
+		}
+	}
+	else
+	{
+		GetWorldTimerManager().SetTimer(TimerHandle_TryGetPlayerState, this, &AUnholyAllianceCharacter::TryGetPlayerState, .1f, false);
+	}
 }
