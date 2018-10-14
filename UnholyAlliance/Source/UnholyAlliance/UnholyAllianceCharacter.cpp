@@ -9,10 +9,13 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Characters/UA_PlayerState.h"
+#include "UnrealNetwork.h"
 #include "UnholyAlliance.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUnholyAllianceCharacter
+
+float AUnholyAllianceCharacter::GetHealth() { return Health.CurrentValue; }
 
 AUnholyAllianceCharacter::AUnholyAllianceCharacter()
 {
@@ -47,7 +50,6 @@ AUnholyAllianceCharacter::AUnholyAllianceCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -143,6 +145,7 @@ void AUnholyAllianceCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		GetWorldTimerManager().SetTimer(TimerHandle_TryGetPlayerState, this, &AUnholyAllianceCharacter::TryGetPlayerState, .1f, false);
+		Health.CurrentValue = Health.BaseValue;
 	}
 }
 
@@ -156,10 +159,9 @@ float AUnholyAllianceCharacter::TakeDamage(float Damage, struct FDamageEvent con
 
 		if (UAPlayerState)
 		{
-			float currentHealth = UAPlayerState->GetHealth();
+			float currentHealth = Health.CurrentValue;
 
-			currentHealth -= Damage;
-			UAPlayerState->SetHealth(currentHealth);
+			Health.CurrentValue -= Damage;
 		}
 	}
 
@@ -168,22 +170,25 @@ float AUnholyAllianceCharacter::TakeDamage(float Damage, struct FDamageEvent con
 
 void AUnholyAllianceCharacter::TryGetPlayerState()
 {
-	if (PlayerState)
-	{
-		TRACE(UA, "TryGetPlayerState: %s", *GetEnumValueAsString("ENetRole", Role));
-		AUA_PlayerState* UAPlayerState = Cast<AUA_PlayerState>(PlayerState);
+	//if (PlayerState)
+	//{
+	//	TRACE(UA, "TryGetPlayerState: %s", *GetEnumValueAsString("ENetRole", Role));
+	//	AUA_PlayerState* UAPlayerState = Cast<AUA_PlayerState>(PlayerState);
 
-		if (UAPlayerState)
-		{
-			TRACE(UA, "TryGetPlayerState: Base Health %f", BaseHealth);
+	//	if (UAPlayerState)
+	//	{
+	//		GetWorldTimerManager().ClearTimer(TimerHandle_TryGetPlayerState);
+	//	}
+	//}
+	//else
+	//{
+	//	GetWorldTimerManager().SetTimer(TimerHandle_TryGetPlayerState, this, &AUnholyAllianceCharacter::TryGetPlayerState, .1f, false);
+	//}
+}
 
-			UAPlayerState->SetHealth(BaseHealth);
+void AUnholyAllianceCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-			GetWorldTimerManager().ClearTimer(TimerHandle_TryGetPlayerState);
-		}
-	}
-	else
-	{
-		GetWorldTimerManager().SetTimer(TimerHandle_TryGetPlayerState, this, &AUnholyAllianceCharacter::TryGetPlayerState, .1f, false);
-	}
+	DOREPLIFETIME_CONDITION(AUnholyAllianceCharacter, Health, ELifetimeCondition::COND_None);
 }

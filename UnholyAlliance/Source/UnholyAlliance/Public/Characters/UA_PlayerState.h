@@ -13,18 +13,5 @@
 UCLASS()
 class UNHOLYALLIANCE_API AUA_PlayerState : public APlayerState
 {
-	GENERATED_BODY()	
-	
-public:
-	UFUNCTION(BlueprintCallable, Category = "Stats")
-		float GetHealth();
-	void SetHealth(float newHealth);
-
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const override;
-
-protected:
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Replicated, Category = "UpgradeableParameters")
-		FUpgradeableParameter Health;
-	
+	GENERATED_BODY()		
 };

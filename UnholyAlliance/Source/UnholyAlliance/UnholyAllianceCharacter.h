@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Structs/UpgradeableParameter.h"
 #include "UnholyAllianceCharacter.generated.h"
 
 class UPlayerStats;
@@ -36,6 +37,9 @@ public:
 	float BaseLookUpRate;
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		float GetHealth();
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -69,8 +73,8 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
 
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-		float BaseHealth;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Replicated, Category = "Stats")
+		FUpgradeableParameter Health;
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -79,5 +83,7 @@ public:
 
 	/** Take damage, handle death */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const;
 };
 
