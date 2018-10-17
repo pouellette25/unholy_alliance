@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Structs/UpgradeableParameter.h"
+#include "Structs/TakeHitInfo.h"
 #include "UnholyAllianceCharacter.generated.h"
 
 class UPlayerStats;
@@ -24,6 +25,13 @@ class AUnholyAllianceCharacter : public ACharacter
 
 	void TryGetPlayerState();
 	FTimerHandle TimerHandle_TryGetPlayerState;
+
+	bool bIsDying;
+	void SetRagdollPhysics();
+	bool CanDie(float KillingDamage, FDamageEvent const& DamageEvent, AController* Killer, AActor* DamageCauser) const;
+	bool Die(float KillingDamage, struct FDamageEvent const& DamageEvent, class AController* Killer, class AActor* DamageCauser);
+	void OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser);
+	void ReplicateHit(float Damage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser, bool bKilled);
 
 public:
 	AUnholyAllianceCharacter();
@@ -72,6 +80,17 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+
+	/** Replicate where this pawn was last hit and damaged */
+	UPROPERTY(Transient, ReplicatedUsing = OnRep_LastTakeHitInfo)
+		FTakeHitInfo LastTakeHitInfo;
+
+	/** play hit or death on client */
+	UFUNCTION()
+		void OnRep_LastTakeHitInfo();
+
+	/** Time at which point the last take hit info for the actor times out and won't be replicated; Used to stop join-in-progress effects all over the screen */
+	float LastTakeHitTimeTimeout;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Replicated, Category = "Stats")
 		FUpgradeableParameter Health;
