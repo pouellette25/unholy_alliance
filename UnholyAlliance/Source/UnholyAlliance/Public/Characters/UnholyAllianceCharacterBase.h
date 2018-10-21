@@ -36,8 +36,14 @@ protected:
 	/** Time at which point the last take hit info for the actor times out and won't be replicated; Used to stop join-in-progress effects all over the screen */
 	float LastTakeHitTimeTimeout;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Replicated, Category = "Stats")
+	UPROPERTY(EditDefaultsOnly, ReplicatedUsing = OnRep_Health, Category = "Stats")
 		FUpgradeableParameter Health;
+
+	UFUNCTION()
+		void OnRep_Health();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnHealthChanged();
 
 	bool Die(float KillingDamage, struct FDamageEvent const& DamageEvent, class AController* Killer, class AActor* DamageCauser);
 
@@ -53,6 +59,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 		float GetHealth();
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		float GetMaxHealth();
 	
 	/** Take damage, handle death */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;

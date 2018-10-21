@@ -7,6 +7,7 @@
 #include "UnrealNetwork.h"
 
 float AUnholyAllianceCharacterBase::GetHealth() { return Health.CurrentValue; }
+float AUnholyAllianceCharacterBase::GetMaxHealth() { return Health.MaxValue; }
 
 // Sets default values
 AUnholyAllianceCharacterBase::AUnholyAllianceCharacterBase()
@@ -20,7 +21,13 @@ AUnholyAllianceCharacterBase::AUnholyAllianceCharacterBase()
 void AUnholyAllianceCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	Health.Init(Health.BaseValue);
+
+	if (HasAuthority())
+	{
+		OnHealthChanged();
+	}
 }
 
 // Called every frame
@@ -39,6 +46,15 @@ void AUnholyAllianceCharacterBase::SetupPlayerInputComponent(UInputComponent* Pl
 
 float AUnholyAllianceCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
+	Health.CurrentValue -= Damage;
+	OnHealthChanged();
+
+	if (Health.CurrentValue <= 0)
+	{
+		// kill the player
+		Die(Damage, DamageEvent, EventInstigator, DamageCauser);
+	}
+
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
 
@@ -207,11 +223,16 @@ void AUnholyAllianceCharacterBase::OnRep_LastTakeHitInfo()
 	}
 }
 
+void AUnholyAllianceCharacterBase::OnRep_Health()
+{
+	OnHealthChanged();
+}
+
 void AUnholyAllianceCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(AUnholyAllianceCharacterBase, Health, ELifetimeCondition::COND_None);
+	DOREPLIFETIME_CONDITION(AUnholyAllianceCharacterBase, Health, ELifetimeCondition::COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnholyAllianceCharacterBase, LastTakeHitInfo, COND_Custom);
 }
 

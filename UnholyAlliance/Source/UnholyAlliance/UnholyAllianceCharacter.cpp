@@ -141,7 +141,6 @@ void AUnholyAllianceCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		GetWorldTimerManager().SetTimer(TimerHandle_TryGetPlayerState, this, &AUnholyAllianceCharacter::TryGetPlayerState, .1f, false);
-		Health.CurrentValue = Health.BaseValue;
 	}
 }
 
@@ -155,13 +154,7 @@ float AUnholyAllianceCharacter::TakeDamage(float Damage, struct FDamageEvent con
 
 		if (UAPlayerState)
 		{
-			Health.CurrentValue -= Damage;
 
-			if (Health.CurrentValue <= 0)
-			{
-				// kill the player
-				Die(Damage, DamageEvent, EventInstigator, DamageCauser);
-			}
 		}
 	}
 

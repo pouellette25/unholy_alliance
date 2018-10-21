@@ -38,6 +38,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "UpgradeableParameters")
 		FUpgradeableParameter CastTime;
 
+	UFUNCTION(BlueprintCallable, Category = "UpgradeableParameters")
+		float GetRange();
+
 public:	
 	// Sets default values for this actor's properties
 	AAbility();

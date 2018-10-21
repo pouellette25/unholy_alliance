@@ -2,6 +2,8 @@
 
 #include "Ability.h"
 
+float AAbility::GetRange() { return Range.CurrentValue; }
+
 // Sets default values
 AAbility::AAbility()
 {
@@ -15,7 +17,7 @@ AAbility::AAbility()
 void AAbility::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Range.Init(Range.BaseValue);
 }
 
 // Called every frame

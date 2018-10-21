@@ -37,13 +37,14 @@ struct FUpgradeableParameter
 	UPROPERTY(EditDefaultsOnly, Category = "UpgradeableParameter")
 		int32 LevelFrequency;
 
-	UPROPERTY(BlueprintReadWrite, Category = "UpgradeableParameter")
+	UPROPERTY()
 		float CurrentValue;
 
-	//UPROPERTY(BlueprintReadOnly, Category = "UpgradeableParameter")
-	//	float MaxValue;
+	UPROPERTY()
+		float MaxValue;
 
 public:
+
 	FUpgradeableParameter() : BaseValue(0), Scalar(0), UpgradeType(EUpgradeTypes::None), LevelFrequency(1), CurrentValue(0) {}
 
 	FUpgradeableParameter(float baseValue, float scalar, EUpgradeTypes upgradeType, int32 levelFrequency, float currentValue)
@@ -53,6 +54,12 @@ public:
 		UpgradeType = upgradeType;
 		LevelFrequency = levelFrequency;
 		CurrentValue = currentValue;
+	}
+
+	void Init(int32 baseValue)
+	{
+		CurrentValue = baseValue;
+		MaxValue = baseValue;
 	}
 
 	void Upgrade(int32 level)
@@ -66,25 +73,25 @@ public:
 			switch (UpgradeType)
 			{
 			case EUpgradeTypes::AddPercentOfMax:
-				CurrentValue += FMath::FloorToInt(Scalar * CurrentValue);
+				MaxValue += FMath::FloorToInt(Scalar * MaxValue);
 				break;
 			case EUpgradeTypes::AddPercentOfBase:
-				CurrentValue += FMath::FloorToInt(Scalar * BaseValue);
+				MaxValue += FMath::FloorToInt(Scalar * MaxValue);
 				break;
 			case EUpgradeTypes::AddFixedValue:
-				CurrentValue += Scalar;
+				MaxValue += Scalar;
 				break;
 			case EUpgradeTypes::Multiply:
-				CurrentValue = FMath::FloorToInt(CurrentValue * Scalar);
+				MaxValue = FMath::FloorToInt(MaxValue * Scalar);
 				break;
 			case EUpgradeTypes::Divide:
 				if (Scalar != 0)
 				{
-					CurrentValue = FMath::FloorToInt(CurrentValue / Scalar);
+					MaxValue = FMath::FloorToInt(MaxValue / Scalar);
 				}
 				break;
 			case EUpgradeTypes::None:
-				CurrentValue = BaseValue;
+				MaxValue = BaseValue;
 				break;
 
 			default:
