@@ -6,8 +6,8 @@
 #include "UnholyAlliance.h"
 #include "UnrealNetwork.h"
 
-float AUnholyAllianceCharacterBase::GetHealth() { return Health.CurrentValue; }
-float AUnholyAllianceCharacterBase::GetMaxHealth() { return Health.MaxValue; }
+float AUnholyAllianceCharacterBase::GetHealth() { return Health.GetCurrentValue(); }
+float AUnholyAllianceCharacterBase::GetMaxHealth() { return Health.GetMaxValue(); }
 
 // Sets default values
 AUnholyAllianceCharacterBase::AUnholyAllianceCharacterBase()

@@ -56,6 +56,9 @@ public:
 		CurrentValue = currentValue;
 	}
 
+	float GetCurrentValue() { return CurrentValue; }
+	float GetMaxValue() { return MaxValue; }
+
 	void Init(int32 baseValue)
 	{
 		CurrentValue = baseValue;
